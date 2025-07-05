@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import Brinquedo  # Importa o modelo Brinquedo
 
-# Register your models here.
+
+@admin.register(Brinquedo)
+class BrinquedoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'tipo', 'valor_locacao',
+                    'ultima_limpeza', 'disponivel')
+    list_filter = ('tipo', 'disponivel')
+    search_fields = ('nome', 'tipo')
