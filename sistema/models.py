@@ -28,3 +28,24 @@ class Cliente(models.Model):
 
     def __str__(self):
         return f'{self.nome} - {self.telefone}'
+    
+
+class Locacao(models.Model):
+    STATUS_PAGAMENTO = [
+        ('pendente', 'Pendente'),
+        ('pago', 'Pago'),
+        ('parcialmente_pago', '30% Pago'),
+        ('cancelado', 'Cancelado'),
+    ]
+
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    brinquedos = models.ManyToManyField(Brinquedo)
+    data_inicio = models.DateField()
+    data_fim = models.DateField()
+    valor_total = models.DecimalField(max_digits=8, decimal_places=2)
+    status_pagamento = models.CharField(
+        max_length=20, choices=STATUS_PAGAMENTO, default='pendente')
+    observacoes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f'Locação de {self.cliente.nome} - {self.data_inicio} a {self.data_fim}'
