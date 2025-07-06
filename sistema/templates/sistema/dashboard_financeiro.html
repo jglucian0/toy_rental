@@ -1,0 +1,71 @@
+{% extends 'sistema/base.html' %}
+
+{% block title %}Relatório Financeiro{% endblock %}
+
+{% block content %}
+<h2>Relatório Financeiro</h2>
+
+<form method="get" class="row mb-4">
+  <div class="col-md-3">
+    <label>Data Início</label>
+    <input type="date" name="inicio" value="{{ filtro_inicio }}" class="form-control">
+  </div>
+  <div class="col-md-3">
+    <label>Data Fim</label>
+    <input type="date" name="fim" value="{{ filtro_fim }}" class="form-control">
+  </div>
+  <div class="col-md-3">
+    <label>Status</label>
+    <select name="status" class="form-select">
+      <option value="">Todos</option>
+      <option value="pago" {% if filtro_status == 'pago' %}selected{% endif %}>Pago</option>
+      <option value="pendente" {% if filtro_status == 'pendente' %}selected{% endif %}>Pendente</option>
+      <option value="cancelado" {% if filtro_status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+    </select>
+  </div>
+  <div class="col-md-3 d-flex align-items-end">
+    <button class="btn btn-primary me-2">Filtrar</button>
+    <a href="{% url 'dashboard_financeiro' %}" class="btn btn-secondary">Limpar</a>
+  </div>
+</form>
+
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="alert alert-success">💰 Total Recebido: <strong>R$ {{ total_recebido }}</strong></div>
+  </div>
+  <div class="col-md-3">
+    <div class="alert alert-warning">🕓 Total Pendente: <strong>R$ {{ total_pendente }}</strong></div>
+  </div>
+  <div class="col-md-3">
+    <div class="alert alert-danger">❌ Cancelado: <strong>R$ {{ total_cancelado }}</strong></div>
+  </div>
+  <div class="col-md-3">
+    <div class="alert alert-info">📊 Total Geral: <strong>R$ {{ total_geral }}</strong></div>
+  </div>
+</div>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Cliente</th>
+      <th>Data</th>
+      <th>Valor</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for loc in locacoes %}
+    <tr>
+      <td>{{ loc.cliente.nome }}</td>
+      <td>{{ loc.data_inicio }} a {{ loc.data_fim }}</td>
+      <td>R$ {{ loc.valor_total }}</td>
+      <td>{{ loc.get_status_pagamento_display }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="4" class="text-center">Nenhuma locação no período.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
