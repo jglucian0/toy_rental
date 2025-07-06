@@ -1,0 +1,42 @@
+{% extends 'sistema/base.html' %}
+
+{% block title %}Lista de Locações{% endblock %}
+
+{% block content %}
+<h2>Locações Realizadas</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Brinquedos</th>
+            <th>Período</th>
+            <th>Valor Total</th>
+            <th>Status Pagamento</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for locacao in locacoes %}
+        <tr>
+            <td>{{ locacao.cliente.nome }}</td>
+            <td>
+                <ul>
+                    {% for brinquedo in locacao.brinquedos.all %}
+                    <li>{{ brinquedo.nome }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>{{ locacao.data_inicio }} a {{ locacao.data_fim }}</td>
+            <td>R$ {{ locacao.valor_total }}</td>
+            <td>{{ locacao.get_status_pagamento_display }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">Nenhuma locação encontrada.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'agendar_locacao' %}" class="btn btn-primary">Nova Locação</a>
+{% endblock %}
