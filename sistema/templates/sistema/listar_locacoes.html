@@ -6,6 +6,19 @@
 <h2>Locações Realizadas</h2>
 
 <table class="table table-bordered table-striped">
+    <form method="get" class="row mb-4">
+        <div class="col-md-4">
+          <input type="text" name="cliente" placeholder="Buscar por cliente" value="{{ cliente_filtro }}" class="form-control">
+        </div>
+        <div class="col-md-3">
+          <input type="date" name="data" value="{{ data_filtro }}" class="form-control">
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary">Filtrar</button>
+          <a href="{% url 'listar_locacoes' %}" class="btn btn-secondary">Limpar</a>
+        </div>
+      </form>
+      
     <thead>
         <tr>
             <th>Cliente</th>
