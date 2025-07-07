@@ -2,9 +2,26 @@ from django.shortcuts import render, redirect
 from .forms import LocacaoForm
 from django.contrib import messages
 from .models import Locacao
+from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count, Q
+from unidecode import unidecode
 
 
+def editar_status_pagamento(request, locacao_id):
+    locacao = get_object_or_404(Locacao, pk=locacao_id)
+
+    if request.method == 'POST':
+        novo_status = request.POST.get('status_pagamento')
+        if novo_status in dict(Locacao.STATUS_PAGAMENTO).keys():
+            locacao.status_pagamento = novo_status
+            locacao.save()
+            messages.success(request, "Status de pagamento atualizado com sucesso!")
+            return redirect('listar_locacoes')
+        
+    return render(request, 'sistema/editar_status_pagamento.html', {
+        'locacao': locacao,
+        'status_pagamento_choices': Locacao.STATUS_PAGAMENTO,
+    })
 
 def agendar_locacao(request):
     if request.method == 'POST':
@@ -27,7 +44,8 @@ def listar_locacoes(request):
     data = request.GET.get('data')
 
     if nome_cliente:
-        locacoes = locacoes.filter(cliente__nome__icontains=nome_cliente)
+        locacoes = [l for l in locacoes if unidecode(
+            nome_cliente.lower()) in unidecode(l.cliente.nome.lower())]
 
     if data:
         locacoes = locacoes.filter(data_inicio=data)

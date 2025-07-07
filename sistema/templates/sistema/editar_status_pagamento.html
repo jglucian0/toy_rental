@@ -1,0 +1,27 @@
+{% extends 'sistema/base.html' %}
+
+{% block title %}Editar Pagamento{% endblock %}
+
+{% block content %}
+<h2>Editar Pagamento</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Cliente:</label>
+        <input type="text" class="form-control" value="{{ locacao.cliente.nome }}" disabled>
+    </div>
+
+    <div class="mb-3">
+        <label>Status Pagamento:</label>
+        <select name="status_pagamento" class="form-select">
+            {% for valor, label in opcoes_status %}
+                <option value="{{ valor }}" {% if locacao.status_pagamento == valor %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'listar_locacoes' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

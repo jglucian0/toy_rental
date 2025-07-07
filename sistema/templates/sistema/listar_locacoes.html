@@ -26,6 +26,7 @@
             <th>Período</th>
             <th>Valor Total</th>
             <th>Status Pagamento</th>
+            <td>Ações</td>
         </tr>
     </thead>
     <tbody>
@@ -42,6 +43,9 @@
             <td>{{ locacao.data_inicio }} a {{ locacao.data_fim }}</td>
             <td>R$ {{ locacao.valor_total }}</td>
             <td>{{ locacao.get_status_pagamento_display }}</td>
+            <td>
+                <a href="{% url 'editar_status_pagamento' locacao.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
+            </td>
         </tr>
         {% empty %}
         <tr>
