@@ -15,13 +15,14 @@
     <div class="mb-3">
         <label>Status Pagamento:</label>
         <select name="status_pagamento" class="form-select">
-            {% for valor, label in opcoes_status %}
-                <option value="{{ valor }}" {% if locacao.status_pagamento == valor %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
+          {% for valor, label in opcoes_status %}
+              <option value="{{ valor }}" {% if locacao.status_pagamento == valor %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
         </select>
     </div>
 
     <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'excluir_locacao' locacao.id %}" class="btn btn-outline-danger ms-2">Excluir Locação</a>
     <a href="{% url 'listar_locacoes' %}" class="btn btn-secondary">Cancelar</a>
 </form>
 {% endblock %}

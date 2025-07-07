@@ -7,5 +7,7 @@ urlpatterns = [
     path('financeiro/', views.dashboard_financeiro, name='dashboard_financeiro'),
     path('locacoes/<int:locacao_id>/editar-status/',
          views.editar_status_pagamento, name='editar_status_pagamento'),
+    path('locacoes/<int:locacao_id>/excluir/',
+         views.excluir_locacao, name='excluir_locacao'),
 
 ]

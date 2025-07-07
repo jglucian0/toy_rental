@@ -1,10 +1,20 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import LocacaoForm
 from django.contrib import messages
 from .models import Locacao
-from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Count, Q
 from unidecode import unidecode
+
+
+def excluir_locacao(request, locacao_id):
+    locacao = get_object_or_404(Locacao, pk=locacao_id)
+
+    if request.method == 'POST':
+        locacao.delete()
+        messages.success(request, 'Locação excluída com sucesso.')
+        return redirect('listar_locacoes')
+
+    return render(request, 'sistema/confirmar_exclusao.html', {'locacao': locacao})
 
 
 def editar_status_pagamento(request, locacao_id):
@@ -20,7 +30,7 @@ def editar_status_pagamento(request, locacao_id):
         
     return render(request, 'sistema/editar_status_pagamento.html', {
         'locacao': locacao,
-        'status_pagamento_choices': Locacao.STATUS_PAGAMENTO,
+        'opcoes_status': Locacao.STATUS_PAGAMENTO,
     })
 
 def agendar_locacao(request):

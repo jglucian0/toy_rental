@@ -1,5 +1,5 @@
 {% extends 'sistema/base.html' %}
-
+{% load filtros %}
 {% block title %}Lista de Locações{% endblock %}
 
 {% block content %}
@@ -40,7 +40,7 @@
                     {% endfor %}
                 </ul>
             </td>
-            <td>{{ locacao.data_inicio }} a {{ locacao.data_fim }}</td>
+            <td>{{ locacao.data_inicio|formata_data_extenso }} a {{ locacao.data_fim|formata_data_extenso }}</td>
             <td>R$ {{ locacao.valor_total }}</td>
             <td>{{ locacao.get_status_pagamento_display }}</td>
             <td>

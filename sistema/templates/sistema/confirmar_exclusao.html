@@ -1,0 +1,16 @@
+{% extends 'sistema/base.html' %}
+
+{% block title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+<h2>Excluir Locação</h2>
+
+<p>Tem certeza que deseja excluir a locação de <strong>{{ locacao.cliente.nome }}</strong> 
+de <strong>{{ locacao.data_inicio }}</strong> a <strong>{{ locacao.data_fim }}</strong>?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sim, excluir</button>
+    <a href="{% url 'listar_locacoes' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
