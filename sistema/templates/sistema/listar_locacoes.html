@@ -46,6 +46,9 @@
             <td>
                 <a href="{% url 'editar_status_pagamento' locacao.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
             </td>
+            <td>
+                <a href="{% url 'enviar_confirmacao_whatsapp' locacao.id %}" class="btn btn-success btn-sm" target="_blank">Enviar WhatsApp</a>
+            </td>
         </tr>
         {% empty %}
         <tr>

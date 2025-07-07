@@ -2,8 +2,40 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import LocacaoForm
 from django.contrib import messages
 from .models import Locacao
+import urllib.parse
 from django.db.models import Sum, Count, Q
 from unidecode import unidecode
+
+
+def enviar_confirmacao_whatsapp(request, locacao_id):
+    locacao = get_object_or_404(Locacao, pk=locacao_id)
+    cliente = locacao.cliente
+
+    brinquedos = ', '.join(
+        [brinquedo.nome for brinquedo in locacao.brinquedos.all()])
+
+    mensagem = f"""
+    
+    Olá {cliente.nome}!
+    
+    Sua locação foi confirmada:
+    📅 Período: {locacao.data_inicio.strftime('%d/%m/%Y')} a {locacao.data_fim.strftime('%d/%m/%Y')}
+    🎠 Brinquedos: {brinquedos}
+    💰 Valor total: R$ {locacao.valor_total}
+    📌 Status: {locacao.get_status_pagamento_display()}
+    
+    Agradecemos por escolher a Happy Kids!
+    """.strip()
+
+    mensagem_encoded = urllib.parse.quote(mensagem)
+
+    numero = cliente.telefone.replace(" ", "").replace(
+        "(", "").replace(")", "").replace("-", "")
+    if not numero.startswith("55"):
+        numero = "55" + numero  # adiciona código do Brasil se necessário
+
+    url = f"https://wa.me/{numero}?text={mensagem_encoded}"
+    return redirect(url)
 
 
 def excluir_locacao(request, locacao_id):

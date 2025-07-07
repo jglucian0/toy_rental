@@ -23,7 +23,7 @@ class Brinquedo(models.Model):
 
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
-    telefone = models.CharField(max_length=15)
+    telefone = models.CharField(max_length=15, blank=True)
     email = models.EmailField(blank=True, null=True)
     cpf = models.CharField(max_length=11, unique=True)
     endereco = models.TextField()
