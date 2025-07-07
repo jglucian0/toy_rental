@@ -1,19 +1,52 @@
 {% extends 'sistema/base.html' %}
-
-{% block title %}Agendar Locação{% endblock %}
-
 {% block content %}
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success">{{ message }}</div>
-  {% endfor %}
-{% endif %}
 
-<h2>Agendar Locação</h2>
+<h2 class="mb-4">Agendar Nova Locação</h2>
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Agendar</button>
+<form method="post" class="row g-3">
+  {% csrf_token %}
+
+  <div class="col-md-6">
+    <label class="form-label">Cliente</label>
+    {{ form.cliente }}
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Brinquedos</label>
+    {{ form.brinquedos }}
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Data de Início</label>
+    {{ form.data_inicio }}
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Data de Fim</label>
+    {{ form.data_fim }}
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Valor Total</label>
+    {{ form.valor_total }}
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Status do Pagamento</label>
+    {{ form.status_pagamento }}
+  </div>
+
+  <div class="col-12">
+    <label class="form-label">Observações</label>
+    {{ form.observacoes }}
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-success">
+      <i class="bi bi-check-circle"></i> Salvar Locação
+    </button>
+    <a href="{% url 'listar_locacoes' %}" class="btn btn-secondary">Cancelar</a>
+  </div>
 </form>
+
 {% endblock %}
