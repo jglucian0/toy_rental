@@ -6,10 +6,18 @@ from django.utils.translation import gettext_lazy as _
 class LocacaoForm(forms.ModelForm):
     class Meta:
         model = Locacao
-        fields = ['cliente', 'brinquedos', 'data_inicio', 'data_fim', 'valor_total', 'status_pagamento', 'observacoes']
+        fields = [
+            'cliente', 'brinquedos', 'data_inicio', 'data_fim',
+            'valor_total', 'status_pagamento', 'observacoes'
+        ]
         widgets = {
-            'data_inicio': forms.DateInput(attrs={'type': 'date'}),
-            'data_fim': forms.DateInput(attrs={'type': 'date'}),
+            'cliente': forms.Select(attrs={'class': 'form-select'}),
+            'brinquedos': forms.SelectMultiple(attrs={'class': 'form-select'}),
+            'data_inicio': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'data_fim': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'valor_total': forms.NumberInput(attrs={'class': 'form-control'}),
+            'status_pagamento': forms.Select(attrs={'class': 'form-select'}),
+            'observacoes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
         
     def clean(self):
