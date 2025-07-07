@@ -24,7 +24,7 @@ def enviar_confirmacao_whatsapp(request, locacao_id):
     f"📌 Status: {locacao.get_status_pagamento_display()}\n\n"
     f"Agradecemos por escolher a Happy Kids!")
 
-    mensagem_encoded = urllib.parse.quote(mensagem)
+    mensagem_encoded = urllib.parse.quote_plus(mensagem)
 
     numero = cliente.telefone.replace(" ", "").replace(
         "(", "").replace(")", "").replace("-", "")
