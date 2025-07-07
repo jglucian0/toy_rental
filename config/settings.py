@@ -9,6 +9,7 @@ Documentação:
 """
 
 from pathlib import Path
+import os
 
 # Caminho base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -98,6 +99,6 @@ USE_TZ = True
 
 # Arquivos estáticos (CSS, JS, imagens)
 STATIC_URL = 'static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Tipo padrão de chave primária para novos modelos
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

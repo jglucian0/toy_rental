@@ -1,6 +1,6 @@
 {% extends 'sistema/base.html' %}
 {% load static %}
-
+{% load filtros %}
 {% block title %}Relatório Financeiro{% endblock %}
 
 {% block content %}
@@ -8,28 +8,39 @@
   <h2 class="mb-0">Relatório Financeiro</h2>
 </div>
 
-<form method="get" class="row g-3 align-items-end mb-4">
+<form method="get" class="row g-2 align-items-end mb-4">
+
   <div class="col-md-3">
-    <label for="inicio" class="form-label">Data Início</label>
-    <input type="date" class="form-control" name="inicio" id="inicio" value="{{ filtro_inicio }}">
+    <input type="date" name="inicio" class="form-control" placeholder="Data início" value="{{ filtro_inicio }}">
   </div>
+
   <div class="col-md-3">
-    <label for="fim" class="form-label">Data Fim</label>
-    <input type="date" class="form-control" name="fim" id="fim" value="{{ filtro_fim }}">
+    <input type="date" name="fim" class="form-control" placeholder="Data fim" value="{{ filtro_fim }}">
   </div>
+
   <div class="col-md-3">
-    <label for="status" class="form-label">Status do Pagamento</label>
-    <select name="status" id="status" class="form-select">
-      <option value="">Todos</option>
-      <option value="pendente" {% if filtro_status == 'pendente' %}selected{% endif %}>Pendente</option>
+    <select name="status" class="form-select">
+      <option value="">Todos os status</option>
       <option value="pago" {% if filtro_status == 'pago' %}selected{% endif %}>Pago</option>
+      <option value="pendente" {% if filtro_status == 'pendente' %}selected{% endif %}>Pendente</option>
       <option value="cancelado" {% if filtro_status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+      <option value="finalizado" {% if filtro_status == 'finalizado' %}selected{% endif %}>Finalizado</option>
     </select>
   </div>
+
   <div class="col-md-3">
-    <button type="submit" class="btn btn-primary w-100">Aplicar Filtros</button>
+    <button type="submit" class="btn btn-outline-secondary w-100">
+      <i class="bi bi-funnel"></i> Filtrar
+    </button>
   </div>
+
 </form>
+
+{% if filtro_inicio and filtro_fim %}
+  <p class="text-muted">
+    Período: <strong>{{ filtro_inicio|formata_data_extenso }} a {{ filtro_fim|formata_data_extenso }}</strong>
+  </p>
+{% endif %}
 
 <div class="row mb-4">
   <div class="col-md-3">
@@ -85,7 +96,7 @@
           {{ b.nome }}{% if not forloop.last %}, {% endif %}
         {% endfor %}
       </td>
-      <td>{{ locacao.data_inicio|date:"d/m/Y" }} a {{ locacao.data_fim|date:"d/m/Y" }}</td>
+      <td>{{ locacao.data_inicio|formata_data_extenso }} a {{ locacao.data_fim|formata_data_extenso }}</td>
       <td>R$ {{ locacao.valor_total|floatformat:2 }}</td>
       <td>
         {% if locacao.status_pagamento == 'pago' %}
@@ -94,8 +105,10 @@
           <span class="badge bg-warning text-dark">Pendente</span>
         {% elif locacao.status_pagamento == 'cancelado' %}
           <span class="badge bg-danger">Cancelado</span>
-        {% else %}
-          <span class="badge bg-secondary">Outro</span>
+        {% elif locacao.status_pagamento == 'parcialmente_pago' %}
+          <span class="badge bg-info">30% Pago</span>
+        {% elif locacao.status_pagamento == 'finalizado' %}
+          <span class="badge bg-secondary">Finalizado</span>
         {% endif %}
       </td>
     </tr>

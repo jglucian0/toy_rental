@@ -4,14 +4,16 @@ from datetime import datetime
 
 register = template.Library()
 
+MESES_EN_PT = {
+    'January': 'Janeiro', 'February': 'Fevereiro', 'March': 'Março',
+    'April': 'Abril', 'May': 'Maio', 'June': 'Junho',
+    'July': 'Julho', 'August': 'Agosto', 'September': 'Setembro',
+    'October': 'Outubro', 'November': 'Novembro', 'December': 'Dezembro',
+}
+
 DIAS_ABREVIADOS = {
-    'segunda-feira': 'Seg.',
-    'terça-feira': 'Ter.',
-    'quarta-feira': 'Qua.',
-    'quinta-feira': 'Qui.',
-    'sexta-feira': 'Sex.',
-    'sábado': 'Sáb.',
-    'domingo': 'Dom.',
+    'Monday': 'Seg.', 'Tuesday': 'Ter.', 'Wednesday': 'Qua.',
+    'Thursday': 'Qui.', 'Friday': 'Sex.', 'Saturday': 'Sáb.', 'Sunday': 'Dom.'
 }
 
 
@@ -20,11 +22,19 @@ def formata_data_extenso(data):
     if not data:
         return ''
 
-    # Formata: "16 de julho"
-    data_formatada = format_date(data, format="d 'de' MMMM", locale='pt_BR')
+    if isinstance(data, str):
+        try:
+            data = datetime.strptime(data, "%Y-%m-%d").date()
+        except:
+            return data
 
-    # Descobre o dia da semana
-    dia_semana = format_date(data, 'EEEE', locale='pt_BR').lower()
-    abreviado = DIAS_ABREVIADOS.get(dia_semana, dia_semana[:3].capitalize())
+    # Parte 1: Dia e mês em inglês
+    dia = data.strftime('%d')
+    mes_en = data.strftime('%B')
+    mes_pt = MESES_EN_PT.get(mes_en, mes_en)
 
-    return f"{data_formatada.capitalize()} - {abreviado}"
+    # Parte 2: Dia da semana em inglês
+    dia_semana_en = data.strftime('%A')
+    dia_semana_pt = DIAS_ABREVIADOS.get(dia_semana_en, dia_semana_en[:3])
+
+    return f"{dia} de {mes_pt} - {dia_semana_pt}"

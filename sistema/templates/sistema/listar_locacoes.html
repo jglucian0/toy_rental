@@ -21,16 +21,26 @@
     <div class="col-md-3">
       <input type="text" name="cliente" value="{{ request.GET.cliente }}" class="form-control" placeholder="Buscar por cliente">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
       <input type="text" name="brinquedo" value="{{ request.GET.brinquedo }}" class="form-control" placeholder="Buscar por brinquedo">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
       <input type="date" name="data" value="{{ request.GET.data }}" class="form-control">
     </div>
+    <div class="col-md-2">
+        <select name="status" class="form-select">
+            <option value="">Todos os status</option>
+            <option value="pendente" {% if filtro_status == 'pendente' %}selected{% endif %}>Pendente</option>
+            <option value="pago" {% if filtro_status == 'pago' %}selected{% endif %}>Pago</option>
+            <option value="parcialmente_pago" {% if filtro_status == 'parcialmente_pago' %}selected{% endif %}>30% Pago</option>
+            <option value="cancelado" {% if filtro_status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+            <option value="finalizado" {% if request.GET.status == 'finalizado' %}selected{% endif %}>Finalizado</option>
+        </select>
+    </div>
     <div class="col-md-3">
-      <button type="submit" class="btn btn-outline-secondary w-100">
+        <button type="submit" class="btn btn-outline-secondary w-100">
         <i class="bi bi-funnel"></i> Filtrar
-      </button>
+        </button>
     </div>
   </form>
 
@@ -42,6 +52,7 @@
           <th>Cliente</th>
           <th>Brinquedos</th>
           <th>Período</th>
+          <th>Observações</th>
           <th>Valor Total</th>
           <th>Status</th>
           <th>Ações</th>
@@ -52,13 +63,14 @@
           <tr>
             <td>{{ locacao.cliente.nome }}</td>
             <td>
-              {% for brinquedo in locacao.brinqueiidos.all %}
+              {% for brinquedo in locacao.brinquedos.all %}
                 <span class="badge bg-primary">{{ brinquedo.nome }}</span>
               {% endfor %}
             </td>
             <td>
-              {{ locacao.data_inicio|date:"d \d\e F - D" }} a {{ locacao.data_fim|date:"d \d\e F - D" }}
+              {{ locacao.data_inicio|formata_data_extenso }} a {{ locacao.data_fim|formata_data_extenso }}
             </td>
+            <td>{{ locacao.observacoes|default:"-" }}</td>
             <td>R$ {{ locacao.valor_total }}</td>
             <td>
               {% if locacao.status_pagamento == 'pago' %}
@@ -67,8 +79,10 @@
                 <span class="badge bg-warning text-dark">Pendente</span>
               {% elif locacao.status_pagamento == 'cancelado' %}
                 <span class="badge bg-danger">Cancelado</span>
-              {% else %}
-                <span class="badge bg-info">Parcial</span>
+              {% elif locacao.status_pagamento == 'parcialmente_pago' %}
+                <span class="badge bg-info">30% Pago</span>
+              {% elif locacao.status_pagamento == 'finalizado' %}
+                <span class="badge bg-secondary">Finalizado</span>
               {% endif %}
             </td>
             <td>

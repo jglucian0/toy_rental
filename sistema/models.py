@@ -31,13 +31,13 @@ class Cliente(models.Model):
     def __str__(self):
         return f'{self.nome} - {self.telefone}'
     
-
 class Locacao(models.Model):
     STATUS_PAGAMENTO = [
         ('pendente', 'Pendente'),
         ('pago', 'Pago'),
         ('parcialmente_pago', '30% Pago'),
         ('cancelado', 'Cancelado'),
+        ('finalizado', 'Finalizado'),
     ]
 
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)

@@ -22,9 +22,9 @@ class LocacaoForm(forms.ModelForm):
         
     def clean(self):
         cleaned_data = super().clean()
+        brinquedos = cleaned_data.get('brinquedos')
         data_inicio = cleaned_data.get('data_inicio')
         data_fim = cleaned_data.get('data_fim')
-        brinquedos = cleaned_data.get('brinquedos')
 
         if data_inicio and data_fim and brinquedos:
             for brinquedo in brinquedos:
@@ -38,7 +38,7 @@ class LocacaoForm(forms.ModelForm):
 
                 if conflitos.exists():
                     raise ValidationError(
-                        _(f"O brinquedo '{brinquedo.nome}' já está alugado neste período.")
+                        _(f"🚫 O brinquedo '{brinquedo.nome}' já está alugado neste período.")
                     )
         return cleaned_data
 
