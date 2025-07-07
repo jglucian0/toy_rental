@@ -5,6 +5,7 @@ from .models import Locacao
 import urllib.parse
 from django.db.models import Sum, Count, Q
 from unidecode import unidecode
+from .forms import ClienteForm
 
 
 def enviar_confirmacao_whatsapp(request, locacao_id):
@@ -61,6 +62,16 @@ def editar_status_pagamento(request, locacao_id):
         'locacao': locacao,
         'opcoes_status': Locacao.STATUS_PAGAMENTO,
     })
+    
+def cadastrar_cliente(request):
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_locacoes')
+    else:
+        form = ClienteForm()
+    return render(request, 'sistema/cadastrar_cliente.html', {'form': form})
 
 def agendar_locacao(request):
     if request.method == 'POST':

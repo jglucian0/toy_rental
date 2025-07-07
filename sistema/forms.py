@@ -1,5 +1,5 @@
 from django import forms
-from .models import Locacao
+from .models import Locacao, Cliente
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -33,6 +33,19 @@ class LocacaoForm(forms.ModelForm):
                         _(f"O brinquedo '{brinquedo.nome}' já está alugado neste período.")
                     )
         return cleaned_data
+
+
+class ClienteForm(forms.ModelForm):
+    class Meta:
+        model = Cliente
+        fields = ['nome', 'telefone', 'cpf', 'email', 'endereco']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control'}),
+            'telefone': forms.TextInput(attrs={'class': 'form-control'}),
+            'cpf': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'endereco': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 class LocacaoAdminForm(forms.ModelForm):
     class Meta:

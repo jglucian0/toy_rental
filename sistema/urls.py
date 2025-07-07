@@ -11,4 +11,6 @@ urlpatterns = [
          views.excluir_locacao, name='excluir_locacao'),
     path('locacoes/<int:locacao_id>/enviar_whatsapp/',
          views.enviar_confirmacao_whatsapp, name='enviar_confirmacao_whatsapp'),
+    path('clientes/cadastrar/', views.cadastrar_cliente, name='cadastrar_cliente'),
+
 ]

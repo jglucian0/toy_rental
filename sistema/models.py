@@ -24,9 +24,9 @@ class Brinquedo(models.Model):
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
     telefone = models.CharField(max_length=15, blank=True)
-    email = models.EmailField(blank=True, null=True)
     cpf = models.CharField(max_length=11, unique=True)
-    endereco = models.TextField()
+    email = models.EmailField(blank=True, null=True)
+    endereco = models.TextField(max_length=200)
 
     def __str__(self):
         return f'{self.nome} - {self.telefone}'
