@@ -12,10 +12,10 @@ class LocacaoForm(forms.ModelForm):
         ]
         widgets = {
             'cliente': forms.Select(attrs={'class': 'form-select'}),
-            'brinquedos': forms.SelectMultiple(attrs={'class': 'form-select'}),
+            'brinquedos': forms.SelectMultiple(attrs={'class': 'form-select', 'id': 'id_brinquedos'}),
             'data_inicio': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'data_fim': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'valor_total': forms.NumberInput(attrs={'class': 'form-control'}),
+            'valor_total': forms.NumberInput(attrs={'class': 'form-control', 'id': 'id_valor_total'}),
             'status_pagamento': forms.Select(attrs={'class': 'form-select'}),
             'observacoes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }

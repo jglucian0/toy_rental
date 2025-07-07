@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import LocacaoForm
+from .forms import LocacaoForm, ClienteForm
 from django.contrib import messages
-from .models import Locacao
+from .models import Brinquedo, Locacao
 import urllib.parse
 from django.db.models import Sum, Count, Q
 from unidecode import unidecode
-from .forms import ClienteForm
 
 
 def enviar_confirmacao_whatsapp(request, locacao_id):
@@ -74,16 +73,14 @@ def cadastrar_cliente(request):
     return render(request, 'sistema/cadastrar_cliente.html', {'form': form})
 
 def agendar_locacao(request):
-    if request.method == 'POST':
-        form = LocacaoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Locação agendada com sucesso!")
-            return redirect('agendar_locacao')
-    else:
-        form = LocacaoForm()
-
-    return render(request, 'sistema/agendar_locacao.html', {'form': form})
+    form = LocacaoForm()
+    brinquedos = Brinquedo.objects.all()
+    return render(request, 'sistema/agendar_locacao.html', {
+        'form': form,
+        'brinquedos': brinquedos,
+    })
+    
+    return render(request, 'sistema/agendar_locacao.html', {'form': form, 'brinquedos': brinquedos})
 
 
 def listar_locacoes(request):

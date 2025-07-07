@@ -1,9 +1,6 @@
 {% extends 'sistema/base.html' %}
-<<<<<<< HEAD
 {% block title %}Agendar Locação{% endblock %}
 
-=======
->>>>>>> dev
 {% block content %}
 
 <h2 class="mb-4">Agendar Nova Locação</h2>
@@ -53,5 +50,36 @@
     <a href="{% url 'listar_locacoes' %}" class="btn btn-secondary">Cancelar</a>
   </div>
 </form>
+
+<!-- SCRIPT: MULTIPLA ESCOLHA + SOMA -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Ativa select2 se estiver usando
+    $('#id_brinquedos').select2({
+      placeholder: 'Selecione os brinquedos',
+      width: '100%'
+    });
+
+    // Mapeia os valores de cada brinquedo
+    // Ignore erro de syntax do VS Code — código será interpretado pelo Django
+    const brinquedosValores = {
+      {% for brinquedo in brinquedos %}
+        "{{ brinquedo.id }}": parseFloat("{{ brinquedo.valor_locacao|floatformat:2|cut:',' }}"){% if not forloop.last %},{% endif %}
+      {% endfor %}
+    };
+
+    // Atualiza valor total ao selecionar
+    $('#id_brinquedos').on('change', function () {
+      let total = 0.0;
+      const selecionados = $(this).val();
+      if (selecionados) {
+        selecionados.forEach(function (id) {
+          total += brinquedosValores[id] || 0;
+        });
+      }
+      $('#id_valor_total').val(total.toFixed(2));
+    });
+  });
+</script>
 
 {% endblock %}
