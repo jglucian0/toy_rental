@@ -14,18 +14,15 @@ def enviar_confirmacao_whatsapp(request, locacao_id):
     brinquedos = ', '.join(
         [brinquedo.nome for brinquedo in locacao.brinquedos.all()])
 
-    mensagem = f"""
-    
-    Olá {cliente.nome}!
-    
-    Sua locação foi confirmada:
-    📅 Período: {locacao.data_inicio.strftime('%d/%m/%Y')} a {locacao.data_fim.strftime('%d/%m/%Y')}
-    🎠 Brinquedos: {brinquedos}
-    💰 Valor total: R$ {locacao.valor_total}
-    📌 Status: {locacao.get_status_pagamento_display()}
-    
-    Agradecemos por escolher a Happy Kids!
-    """.strip()
+
+    mensagem = (
+    f"Olá {cliente.nome}!\n\n"
+    f"Sua locação foi confirmada:\n"
+    f"📅 Período: {locacao.data_inicio.strftime('%d/%m/%Y')} a {locacao.data_fim.strftime('%d/%m/%Y')}\n"
+    f"🎠 Brinquedos: {brinquedos}\n"
+    f"💰 Valor total: R$ {locacao.valor_total}\n"
+    f"📌 Status: {locacao.get_status_pagamento_display()}\n\n"
+    f"Agradecemos por escolher a Happy Kids!")
 
     mensagem_encoded = urllib.parse.quote(mensagem)
 
