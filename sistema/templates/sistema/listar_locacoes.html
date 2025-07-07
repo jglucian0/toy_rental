@@ -1,62 +1,96 @@
 {% extends 'sistema/base.html' %}
 {% load filtros %}
 {% block title %}Lista de Locações{% endblock %}
-
 {% block content %}
-<h2>Locações Realizadas</h2>
 
-<table class="table table-bordered table-striped">
-    <form method="get" class="row mb-4">
-        <div class="col-md-4">
-          <input type="text" name="cliente" placeholder="Buscar por cliente" value="{{ cliente_filtro }}" class="form-control">
-        </div>
-        <div class="col-md-3">
-          <input type="date" name="data" value="{{ data_filtro }}" class="form-control">
-        </div>
-        <div class="col-md-3">
-          <button type="submit" class="btn btn-primary">Filtrar</button>
-          <a href="{% url 'listar_locacoes' %}" class="btn btn-secondary">Limpar</a>
-        </div>
-      </form>
-      
-    <thead>
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Locações</h2>
+    <div>
+      <a href="{% url 'agendar_locacao' %}" class="btn btn-success me-2">
+        <i class="bi bi-plus-circle"></i> Nova Locação
+      </a>
+      <a href="{% url 'cadastrar_cliente' %}" class="btn btn-primary">
+        <i class="bi bi-person-plus"></i> Novo Cliente
+      </a>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <form method="get" class="row g-2 mb-4">
+    <div class="col-md-3">
+      <input type="text" name="cliente" value="{{ request.GET.cliente }}" class="form-control" placeholder="Buscar por cliente">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="brinquedo" value="{{ request.GET.brinquedo }}" class="form-control" placeholder="Buscar por brinquedo">
+    </div>
+    <div class="col-md-3">
+      <input type="date" name="data" value="{{ request.GET.data }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-outline-secondary w-100">
+        <i class="bi bi-funnel"></i> Filtrar
+      </button>
+    </div>
+  </form>
+
+  <!-- Tabela -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle text-center">
+      <thead class="table-dark">
         <tr>
-            <th>Cliente</th>
-            <th>Brinquedos</th>
-            <th>Período</th>
-            <th>Valor Total</th>
-            <th>Status Pagamento</th>
-            <td>Ações</td>
+          <th>Cliente</th>
+          <th>Brinquedos</th>
+          <th>Período</th>
+          <th>Valor Total</th>
+          <th>Status</th>
+          <th>Ações</th>
         </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
         {% for locacao in locacoes %}
-        <tr>
+          <tr>
             <td>{{ locacao.cliente.nome }}</td>
             <td>
-                <ul>
-                    {% for brinquedo in locacao.brinquedos.all %}
-                    <li>{{ brinquedo.nome }}</li>
-                    {% endfor %}
-                </ul>
+              {% for brinquedo in locacao.brinqueiidos.all %}
+                <span class="badge bg-primary">{{ brinquedo.nome }}</span>
+              {% endfor %}
             </td>
-            <td>{{ locacao.data_inicio|formata_data_extenso }} a {{ locacao.data_fim|formata_data_extenso }}</td>
+            <td>
+              {{ locacao.data_inicio|date:"d \d\e F - D" }} a {{ locacao.data_fim|date:"d \d\e F - D" }}
+            </td>
             <td>R$ {{ locacao.valor_total }}</td>
-            <td>{{ locacao.get_status_pagamento_display }}</td>
             <td>
-                <a href="{% url 'editar_status_pagamento' locacao.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
+              {% if locacao.status_pagamento == 'pago' %}
+                <span class="badge bg-success">Pago</span>
+              {% elif locacao.status_pagamento == 'pendente' %}
+                <span class="badge bg-warning text-dark">Pendente</span>
+              {% elif locacao.status_pagamento == 'cancelado' %}
+                <span class="badge bg-danger">Cancelado</span>
+              {% else %}
+                <span class="badge bg-info">Parcial</span>
+              {% endif %}
             </td>
             <td>
-                <a href="{% url 'enviar_confirmacao_whatsapp' locacao.id %}" class="btn btn-success btn-sm" target="_blank">Enviar WhatsApp</a>
+              <a href="{% url 'editar_status_pagamento' locacao.id %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <a href="{% url 'enviar_confirmacao_whatsapp' locacao.id %}" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-whatsapp"></i>
+              </a>
+              <a href="{% url 'excluir_locacao' locacao.id %}" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i>
+              </a>
             </td>
-        </tr>
+          </tr>
         {% empty %}
-        <tr>
-            <td colspan="5" class="text-center">Nenhuma locação encontrada.</td>
-        </tr>
+          <tr>
+            <td colspan="6" class="text-muted">Nenhuma locação encontrada.</td>
+          </tr>
         {% endfor %}
-    </tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-<a href="{% url 'agendar_locacao' %}" class="btn btn-primary">Nova Locação</a>
 {% endblock %}

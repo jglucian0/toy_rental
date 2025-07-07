@@ -63,7 +63,7 @@
     // Mapeia os valores de cada brinquedo
     // Ignore erro de syntax do VS Code — código será interpretado pelo Django
     const brinquedosValores = {
-      {% for brinquedo in brinquedos %}
+      {% for brinquedo in brinquedos %} 
         "{{ brinquedo.id }}": parseFloat("{{ brinquedo.valor_locacao|floatformat:2|cut:',' }}"){% if not forloop.last %},{% endif %}
       {% endfor %}
     };

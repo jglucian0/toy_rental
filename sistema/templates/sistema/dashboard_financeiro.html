@@ -1,69 +1,107 @@
 {% extends 'sistema/base.html' %}
+{% load static %}
 
 {% block title %}Relatório Financeiro{% endblock %}
 
 {% block content %}
-<h2>Relatório Financeiro</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0">Relatório Financeiro</h2>
+</div>
 
-<form method="get" class="row mb-4">
+<form method="get" class="row g-3 align-items-end mb-4">
   <div class="col-md-3">
-    <label>Data Início</label>
-    <input type="date" name="inicio" value="{{ filtro_inicio }}" class="form-control">
+    <label for="inicio" class="form-label">Data Início</label>
+    <input type="date" class="form-control" name="inicio" id="inicio" value="{{ filtro_inicio }}">
   </div>
   <div class="col-md-3">
-    <label>Data Fim</label>
-    <input type="date" name="fim" value="{{ filtro_fim }}" class="form-control">
+    <label for="fim" class="form-label">Data Fim</label>
+    <input type="date" class="form-control" name="fim" id="fim" value="{{ filtro_fim }}">
   </div>
   <div class="col-md-3">
-    <label>Status</label>
-    <select name="status" class="form-select">
+    <label for="status" class="form-label">Status do Pagamento</label>
+    <select name="status" id="status" class="form-select">
       <option value="">Todos</option>
-      <option value="pago" {% if filtro_status == 'pago' %}selected{% endif %}>Pago</option>
       <option value="pendente" {% if filtro_status == 'pendente' %}selected{% endif %}>Pendente</option>
+      <option value="pago" {% if filtro_status == 'pago' %}selected{% endif %}>Pago</option>
       <option value="cancelado" {% if filtro_status == 'cancelado' %}selected{% endif %}>Cancelado</option>
     </select>
   </div>
-  <div class="col-md-3 d-flex align-items-end">
-    <button class="btn btn-primary me-2">Filtrar</button>
-    <a href="{% url 'dashboard_financeiro' %}" class="btn btn-secondary">Limpar</a>
+  <div class="col-md-3">
+    <button type="submit" class="btn btn-primary w-100">Aplicar Filtros</button>
   </div>
 </form>
 
 <div class="row mb-4">
   <div class="col-md-3">
-    <div class="alert alert-success">💰 Total Recebido: <strong>R$ {{ total_recebido }}</strong></div>
+    <div class="card text-white bg-success">
+      <div class="card-body">
+        <h5 class="card-title">Total Recebido</h5>
+        <p class="card-text fs-5">R$ {{ total_recebido|floatformat:2 }}</p>
+      </div>
+    </div>
   </div>
   <div class="col-md-3">
-    <div class="alert alert-warning">🕓 Total Pendente: <strong>R$ {{ total_pendente }}</strong></div>
+    <div class="card text-white bg-warning">
+      <div class="card-body">
+        <h5 class="card-title">Total Pendente</h5>
+        <p class="card-text fs-5">R$ {{ total_pendente|floatformat:2 }}</p>
+      </div>
+    </div>
   </div>
   <div class="col-md-3">
-    <div class="alert alert-danger">❌ Cancelado: <strong>R$ {{ total_cancelado }}</strong></div>
+    <div class="card text-white bg-danger">
+      <div class="card-body">
+        <h5 class="card-title">Total Cancelado</h5>
+        <p class="card-text fs-5">R$ {{ total_cancelado|floatformat:2 }}</p>
+      </div>
+    </div>
   </div>
   <div class="col-md-3">
-    <div class="alert alert-info">📊 Total Geral: <strong>R$ {{ total_geral }}</strong></div>
+    <div class="card text-white bg-secondary">
+      <div class="card-body">
+        <h5 class="card-title">Total Geral</h5>
+        <p class="card-text fs-5">R$ {{ total_geral|floatformat:2 }}</p>
+      </div>
+    </div>
   </div>
 </div>
 
-<table class="table table-bordered">
-  <thead>
+<table class="table table-bordered table-hover table-striped">
+  <thead class="table-dark">
     <tr>
       <th>Cliente</th>
-      <th>Data</th>
+      <th>Brinquedos</th>
+      <th>Período</th>
       <th>Valor</th>
       <th>Status</th>
     </tr>
   </thead>
   <tbody>
-    {% for loc in locacoes %}
+    {% for locacao in locacoes %}
     <tr>
-      <td>{{ loc.cliente.nome }}</td>
-      <td>{{ loc.data_inicio }} a {{ loc.data_fim }}</td>
-      <td>R$ {{ loc.valor_total }}</td>
-      <td>{{ loc.get_status_pagamento_display }}</td>
+      <td>{{ locacao.cliente.nome }}</td>
+      <td>
+        {% for b in locacao.brinquedos.all %}
+          {{ b.nome }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </td>
+      <td>{{ locacao.data_inicio|date:"d/m/Y" }} a {{ locacao.data_fim|date:"d/m/Y" }}</td>
+      <td>R$ {{ locacao.valor_total|floatformat:2 }}</td>
+      <td>
+        {% if locacao.status_pagamento == 'pago' %}
+          <span class="badge bg-success">Pago</span>
+        {% elif locacao.status_pagamento == 'pendente' %}
+          <span class="badge bg-warning text-dark">Pendente</span>
+        {% elif locacao.status_pagamento == 'cancelado' %}
+          <span class="badge bg-danger">Cancelado</span>
+        {% else %}
+          <span class="badge bg-secondary">Outro</span>
+        {% endif %}
+      </td>
     </tr>
     {% empty %}
     <tr>
-      <td colspan="4" class="text-center">Nenhuma locação no período.</td>
+      <td colspan="5" class="text-center">Nenhuma locação encontrada com os filtros aplicados.</td>
     </tr>
     {% endfor %}
   </tbody>
