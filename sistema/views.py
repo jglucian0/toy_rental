@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import LocacaoForm, ClienteForm
 from django.contrib import messages
@@ -12,24 +13,25 @@ def enviar_confirmacao_whatsapp(request, locacao_id):
     locacao = get_object_or_404(Locacao, pk=locacao_id)
     cliente = locacao.cliente
 
-    brinquedos = ', '.join(
-        [brinquedo.nome for brinquedo in locacao.brinquedos.all()])
+    brinquedos = ', '.join([b.nome for b in locacao.brinquedos.all()])
 
+
+    
     mensagem = (
-        f"Olá {cliente.nome}!\n\n"
-        f"Sua locação foi confirmada:\n"
-        f"📅 Período: {locacao.data_inicio.strftime('%d/%m/%Y')} a {locacao.data_fim.strftime('%d/%m/%Y')}\n"
-        f"🎠 Brinquedos: {brinquedos}\n"
-        f"💰 Valor total: R$ {locacao.valor_total}\n"
-        f"📌 Status: {locacao.get_status_pagamento_display()}\n\n"
-        f"Agradecemos por escolher a Happy Kids!")
+        f"*Olá, {cliente.nome}*\n\n"
+        f"*Sua locação foi confirmada!*\n"
+        f"*Data:* {locacao.data_inicio.strftime('%d/%m/%Y')}\n"
+        f"*Brinquedos:* {brinquedos}\n"
+        f"*Valor total:* R$ {locacao.valor_total:.2f}\n\n"
+        f"*Agradecemos por escolher a Happy Kids!*"
+    )
 
-    mensagem_encoded = urllib.parse.quote_plus(mensagem)
+    mensagem_encoded = urllib.parse.quote(mensagem, safe='')
+    print(mensagem_encoded)
 
-    numero = cliente.telefone.replace(" ", "").replace(
-        "(", "").replace(")", "").replace("-", "")
+    numero = cliente.telefone.translate(str.maketrans('', '', ' ()-'))
     if not numero.startswith("55"):
-        numero = "55" + numero  # adiciona código do Brasil se necessário
+        numero = "55" + numero
 
     url = f"https://wa.me/{numero}?text={mensagem_encoded}"
     return redirect(url)
@@ -95,14 +97,12 @@ def agendar_locacao(request):
 
 
 def listar_locacoes(request):
-    status = request.GET.get('status')
+    locacoes = Locacao.objects.select_related(
+        'cliente').prefetch_related('brinquedos').order_by('-data_inicio')
+
     nome_cliente = request.GET.get('cliente')
     data = request.GET.get('data')
 
-    locacoes = Locacao.objects.select_related(
-        'cliente').prefetch_related('brinquedos')
-
-    # Filtro por nome (sem acento e insensitive)
     if nome_cliente:
         locacoes = [l for l in locacoes if unidecode(
             nome_cliente.lower()) in unidecode(l.cliente.nome.lower())]
@@ -110,22 +110,10 @@ def listar_locacoes(request):
     if data:
         locacoes = locacoes.filter(data_inicio=data)
 
-    # Filtro por status
-    if status == '':
-        pass 
-    elif status:
-        locacoes = locacoes.filter(status_pagamento=status)
-    else:
-        locacoes = locacoes.exclude(status_pagamento='finalizado')
-
-    if not isinstance(locacoes, list): 
-        locacoes = locacoes.order_by('data_inicio')
-
     return render(request, 'sistema/listar_locacoes.html', {
         'locacoes': locacoes,
         'nome_cliente': nome_cliente or '',
         'data_filtro': data or '',
-        'filtro_status': status or '',  
     })
 
 

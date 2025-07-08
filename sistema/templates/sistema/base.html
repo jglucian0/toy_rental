@@ -16,7 +16,7 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #f9f9f9;
+      background-color: #f8f9fa;
     }
     .sidebar {
       width: 250px;
@@ -52,12 +52,49 @@
       border-radius: 10px;
       padding: 10px 20px;
     }
+
+    .sidebar .text-center{
+        display: none;
+      }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: relative;
+        height: auto;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }
+
+      .sidebar .nav-link {
+      font-size: 0.8rem;
+      color: #333;
+      margin-bottom: 8px;
+      }
+
+      .sidebar .logo {
+        display: none;
+      }
+
+      .sidebar .text-center{
+        display: block;
+        margin-top: 10px;
+      }
+
+      .content {
+        margin-left: 0;
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div class="sidebar">
-    <img src="{% static 'img/logo_happy_kids.webp' %}" alt="Logo Happy Kids" class="logo">
+    <img src="{% static 'img/logo_happy_kids.png' %}" alt="Logo Happy Kids" class="logo" width="200">
     <h5 class="text-center">Locação de Brinquedos</h5>
     <hr>
     <nav class="nav flex-column">

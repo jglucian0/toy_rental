@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sistema',  # Sua aplicação personalizada
+    'sistema',
 ]
 
 # Middlewares
@@ -99,6 +99,10 @@ USE_TZ = True
 
 # Arquivos estáticos (CSS, JS, imagens)
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Tipo padrão de chave primária para novos modelos
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
