@@ -18,10 +18,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-5qa*(+0@#z4ke^k6+rp=!-o#@8!o7o*c)i=5%2@$nvqbwzlx4n'
 
 # Debug deve estar em False em produção
-DEBUG = True
+DEBUG = False
 
 # Lista de hosts permitidos (em produção, defina os domínios/IPs)
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['jgluciano.pythonanywhere.com']
 
 # Aplicações instaladas
 INSTALLED_APPS = [
